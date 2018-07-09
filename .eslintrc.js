@@ -28,6 +28,7 @@ module.exports = {
     // 可以加分号
     'semi':['error', 'always'],
     // 函数前的空格
-    'space-before-function-paren':'off'
+    'space-before-function-paren':'off',
+    "no-tabs":"off"
   }
 }
