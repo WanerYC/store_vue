@@ -12,7 +12,7 @@
             <el-form-item label="密码">
                 <el-input type="password" v-model="formdata.password"></el-input>
             </el-form-item>
-            <el-button class="login-button" type="primary">登录</el-button>
+            <el-button @click="handleLogin" class="login-button" type="primary">登录</el-button>
         </el-form>
     </div>
 </template>
@@ -27,6 +27,48 @@ export default {
         password: ''
       }
     };
+  },
+  methods: {
+    // 新语法
+    async handleLogin() {
+      const res = await this.$http.post('login', this.formdata);
+      // 相当于在回调函数中书写的代码
+      const data = res.data;
+      const { meta: { status, msg } } = data;
+      if (status === 200) {
+        this.$message.success(msg);
+        const { data: { token } } = data;
+        console.log(data);
+        sessionStorage.setItem('token', token);
+      } else {
+        this.$message.error(msg);
+      }
+    }
+
+    // 旧语法
+    // handleLogin () {
+    //   // alert('ewe');
+    //   this.$http
+    //     .post('login', this.formdata)
+    //     .then((res) => {
+    //       console.log(res);
+    //       // res -> {status:200, data:{data:{}, meta:{}}}
+    //       const data = res.data;
+    //       const { meta: { status, msg } } = data;
+    //       if (status === 200) {
+    //         // 登录成功
+    //         const token = data.data.token;
+    //         console.log(token);
+    //         // 跳转到后台首页, 记录token sesstionStorage
+    //         sessionStorage.setItem('token', token);
+    //         // 成功提示
+    //         this.$message.success(msg);
+    //       } else {
+    //         // 失败
+    //         this.$message.error(msg);
+    //       }
+    //     });
+    // }
   }
 };
 </script>
