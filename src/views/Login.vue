@@ -40,6 +40,8 @@ export default {
         const { data: { token } } = data;
         console.log(data);
         sessionStorage.setItem('token', token);
+        // 跳转
+        this.$router.push({ name: 'home' });
       } else {
         this.$message.error(msg);
       }
