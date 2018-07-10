@@ -52,6 +52,7 @@
 			<template slot-scope="scope">
 				<!-- scope.row 就是当前行绑定数据对象 -->
 				<el-switch
+          @change="handleUserStatus(scope.row)"
 					v-model="scope.row.mg_state"
 					active-color="#13ce66"
 					inactive-color="#ff4949">
@@ -139,6 +140,20 @@ export default {
     // 搜索
     handleSearch() {
       this.loadData();
+    },
+    // 修改用户状态
+    async handleUserStatus(user) {
+      console.log(user);
+      const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}}`);
+      console.log(res);
+      const data = res.data;
+      const { meta: { msg, status } } = data;
+      if (status === 200) {
+        // 成功
+        this.$message.success(msg);
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
