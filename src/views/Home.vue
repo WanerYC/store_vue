@@ -85,6 +85,7 @@
                     </el-submenu>
                 </el-menu>
             </el-aside>
+            <!-- 主要内容区 -->
             <el-main class="main">
                 <router-view></router-view>
             </el-main>

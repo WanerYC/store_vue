@@ -66,6 +66,18 @@
 			</template>
 		</el-table-column>
 	</el-table>
+
+	<!-- 分页板块 -->
+	<el-pagination
+		@size-change="handleSizeChange"
+		@current-change="handleCurrentChange"
+		:current-page="pagenum"
+		:page-sizes="[2, 4, 6, 8]"
+		:page-size="pagesize"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total=total>
+    </el-pagination>
+
 </el-card>
 </template>
 
@@ -74,14 +86,18 @@ export default {
   data() {
     return {
       list: [],
-      loading: true
+      loading: true,
+      // 分页部分
+      pagenum: 1,
+      pagesize: 5,
+      total: 0
     };
   },
   created() {
     this.loadData();
   },
   methods: {
-    // 发送异步请求
+    // 渲染数据列表 发送异步请求
     async loadData() {
       this.loading = true;
       // 获取token
@@ -100,6 +116,13 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 切换每页显示多少条时触发
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
