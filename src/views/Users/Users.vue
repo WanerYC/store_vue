@@ -13,7 +13,7 @@
 			<el-input placeholder="请输入内容" v-model="searchUse" clearable class="searchInput">
 				<el-button slot="append" @click="handleSearch" icon="el-icon-search"></el-button>
 			</el-input>
-			<el-button type="success" plain>添加用户</el-button>
+			<el-button type="success" @click="addUserDialogVisible = true" plain>添加用户</el-button>
 		</el-col>
 	</el-row>
 
@@ -48,7 +48,7 @@
 				{{ scope.row.create_time | fmData('YYYY-MM-DD') }}
 			</template>
 		</el-table-column>
-		<el-table-column label="用户状态" width="100">
+		<el-table-column label="用户状态" width="100" prop="mg_state">
 			<template slot-scope="scope">
 				<!-- scope.row 就是当前行绑定数据对象 -->
 				<el-switch
@@ -77,7 +77,29 @@
 		:page-size="pagesize"
 		layout="total, sizes, prev, pager, next, jumper"
 		:total=total>
-    </el-pagination>
+  </el-pagination>
+
+  <!-- 添加用户弹出框 -->
+  <el-dialog title="添加用户" :visible.sync="addUserDialogVisible">
+    <el-form :model="formData" label-width="100px">
+      <el-form-item label="用户名">
+        <el-input v-model="formData.username" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" >
+        <el-input v-model="formData.password" type="password" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱">
+        <el-input v-model="formData.email" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="电话">
+        <el-input v-model="formData.mobile" auto-complete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="addUserDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="handleAdd">确 定</el-button>
+    </div>
+  </el-dialog>
 
 </el-card>
 </template>
@@ -94,7 +116,16 @@ export default {
       // 每页显示条目个数
       pagesize: 2,
       total: 0,
-      searchUse: ''
+      searchUse: '',
+      // 添加用户板块数据
+      formData: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      // 控制弹出框的显示隐藏
+      addUserDialogVisible: false
     };
   },
   created() {
@@ -141,9 +172,10 @@ export default {
     handleSearch() {
       this.loadData();
     },
-    // 修改用户状态
+    // 当开关的状态改变 修改用户状态
     async handleUserStatus(user) {
-      // console.log(user);
+      console.log(user);
+      console.log(user.mg_state);
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}}`);
       console.log(res);
       const data = res.data;
@@ -151,7 +183,6 @@ export default {
       if (status === 200) {
         // 成功
         this.$message.success(msg);
-        this.loadData();
       } else {
         this.$message.error(msg);
       }
@@ -172,6 +203,12 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 添加用户的确认按钮
+    async handleAdd() {
+      // 异步操作
+      // const res = await this.$http.post('users', this.formData);
+
     }
   }
 };
