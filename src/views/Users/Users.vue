@@ -81,11 +81,11 @@
 
   <!-- 添加用户弹出框 -->
   <el-dialog title="添加用户" :visible.sync="addUserDialogVisible">
-    <el-form :model="formData" label-width="100px">
-      <el-form-item label="用户名">
+    <el-form :model="formData" label-width="100px" :rules="formRules" ref="myform">
+      <el-form-item label="用户名" prop="username">
         <el-input v-model="formData.username" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="密码" >
+      <el-form-item label="密码" prop="password">
         <el-input v-model="formData.password" type="password" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="邮箱">
@@ -125,7 +125,18 @@ export default {
         mobile: ''
       },
       // 控制弹出框的显示隐藏
-      addUserDialogVisible: false
+      addUserDialogVisible: false,
+      // 表单的验证规则
+      formRules: {
+        username: [
+          { required: true, message: '请输入用户名称', trigger: 'blur' },
+          { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入用户密码', trigger: 'blur' },
+          { min: 3, max: 9, message: '长度在 3 到 9 个字符', trigger: 'blur' }
+        ]
+      }
     };
   },
   created() {
@@ -206,26 +217,33 @@ export default {
     },
     // 添加用户的确认按钮
     async handleAdd() {
-      // 异步操作
-      const res = await this.$http.post('users', this.formData);
-      console.log(res);
-      const data = res.data;
-      const { meta: { msg, status } } = data;
-      if (status === 201) {
-        // 添加成功提醒
-        this.$message.success(msg);
-        // 隐藏文本框
-        this.addUserDialogVisible = false;
-        // 重新加载此页面
-        this.loadData();
-        // 清空文本框
-        // this.formData.resetFields();
-        for(let key in this.formData) {
-          this.formData[key] = '';
-        }
-      } else {
-        this.$message.error(msg);
-      } 
+      this.$refs.myform.validate(async (valid) => {
+        if (!valid) {
+          // 表单验证失败
+          return this.$message.error(msg);
+        };
+        // 表单验证成功
+        // 异步操作
+        const res = await this.$http.post('users', this.formData);
+        console.log(res);
+        const data = res.data;
+        const { meta: { msg, status } } = data;
+        if (status === 201) {
+          // 添加成功提醒
+          this.$message.success(msg);
+          // 隐藏文本框
+          this.addUserDialogVisible = false;
+          // 重新加载此页面
+          this.loadData();
+          // 清空文本框
+          // this.formData.resetFields();
+          for(let key in this.formData) {
+            this.formData[key] = '';
+          }
+        } else {
+          this.$message.error(msg);
+        } 
+      });
     }
   }
 };
