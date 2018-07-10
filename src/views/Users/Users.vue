@@ -61,7 +61,7 @@
 		</el-table-column>
 		<el-table-column label="操作">
 			<template slot-scope="scope">
-				<el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
+				<el-button type="primary" icon="el-icon-edit" size="mini" @click="editUserDialogVisible = true" plain></el-button>
 				<el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" plain></el-button>
 				<el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
 			</template>
@@ -101,6 +101,28 @@
     </div>
   </el-dialog>
 
+  <!-- 编辑用户弹出框 -->
+  <el-dialog title="编辑用户" :visible.sync="editUserDialogVisible">
+    <el-form :model="formData" label-width="100px" :rules="formRules" ref="myform">
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="formData.username" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="formData.password" type="password" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱">
+        <el-input v-model="formData.email" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="电话">
+        <el-input v-model="formData.mobile" auto-complete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editUserDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="handleEdit">确 定</el-button>
+    </div>
+  </el-dialog>
+
 </el-card>
 </template>
 
@@ -136,7 +158,9 @@ export default {
           { required: true, message: '请输入用户密码', trigger: 'blur' },
           { min: 3, max: 9, message: '长度在 3 到 9 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      // 控制编辑框的显示隐藏
+      editUserDialogVisible: false
     };
   },
   created() {
@@ -244,6 +268,10 @@ export default {
           this.$message.error(msg);
         } 
       });
+    },
+    // 编辑用户的确认按钮
+    handleEdit() {
+
     }
   }
 };
