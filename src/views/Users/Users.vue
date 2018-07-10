@@ -61,7 +61,7 @@
 		</el-table-column>
 		<el-table-column label="操作">
 			<template slot-scope="scope">
-				<el-button type="primary" icon="el-icon-edit" size="mini" @click="editUserDialogVisible = true" plain></el-button>
+				<el-button type="primary" icon="el-icon-edit" size="mini" @click="handleShowEditDialog(scope.row)" plain></el-button>
 				<el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" plain></el-button>
 				<el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
 			</template>
@@ -105,10 +105,7 @@
   <el-dialog title="编辑用户" :visible.sync="editUserDialogVisible">
     <el-form :model="formData" label-width="100px" :rules="formRules" ref="myform">
       <el-form-item label="用户名" prop="username">
-        <el-input v-model="formData.username" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="formData.password" type="password" auto-complete="off"></el-input>
+        <el-input v-model="formData.username" disabled auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="邮箱">
         <el-input v-model="formData.email" auto-complete="off"></el-input>
@@ -177,6 +174,7 @@ export default {
 
       // const res = await this.$http.get('users?pagenum=1&pagesize=10');
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchUse}`);
+      console.log(res);
       this.loading = false;
       const data = res.data;
       const { meta: { msg, status } } = data;
@@ -244,7 +242,7 @@ export default {
       this.$refs.myform.validate(async (valid) => {
         if (!valid) {
           // 表单验证失败
-          return this.$message.error(msg);
+          return this.$message.error('请完整输入内容');
         };
         // 表单验证成功
         // 异步操作
@@ -261,17 +259,39 @@ export default {
           this.loadData();
           // 清空文本框
           // this.formData.resetFields();
-          for(let key in this.formData) {
+          for (let key in this.formData) {
             this.formData[key] = '';
           }
         } else {
           this.$message.error(msg);
-        } 
+        }
       });
     },
+    // 通过id查找用户,展现在页面上
+    async handleShowEditDialog (user) {
+      this.editUserDialogVisible = true;
+      // console.log(user);
+      this.formData.username = user.username;
+      this.formData.email = user.email;
+      this.formData.mobile = user.mobile;
+      this.formData.id = user.id;
+    },
     // 编辑用户的确认按钮
-    handleEdit() {
-
+    async handleEdit() {
+      // alert('asdas');
+      // console.log(this.formData);
+      const res = await this.$http.put(`users/${this.formData.id}`, this.formData);
+      console.log(res);
+      const data = res.data;
+      const { meta: { msg, status } } = data;
+      if (status === 200) {
+        // 修改成功
+        this.$message.success(msg);
+        // 刷新页面
+        this.loadData();
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
