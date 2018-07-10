@@ -10,8 +10,8 @@
 	<!-- 搜索区域 -->
 	<el-row class="searchArea">
 		<el-col :span="24">
-			<el-input placeholder="请输入内容" clearable class="searchInput">
-				<el-button slot="append" icon="el-icon-search"></el-button>
+			<el-input placeholder="请输入内容" v-model="searchUse" clearable class="searchInput">
+				<el-button slot="append" @click="handleSearch" icon="el-icon-search"></el-button>
 			</el-input>
 			<el-button type="success" plain>添加用户</el-button>
 		</el-col>
@@ -87,12 +87,13 @@ export default {
     return {
       list: [],
       loading: true,
-			// 分页部分
-			// 当前页数
-			pagenum: 1,
-			// 每页显示条目个数
+      // 分页部分
+      // 当前页数
+      pagenum: 1,
+      // 每页显示条目个数
       pagesize: 2,
-      total: 0
+      total: 0,
+      searchUse: ''
     };
   },
   created() {
@@ -108,7 +109,7 @@ export default {
       this.$http.defaults.headers.common['Authorization'] = token;
 
       // const res = await this.$http.get('users?pagenum=1&pagesize=10');
-      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchUse}`);
       this.loading = false;
       const data = res.data;
       const { meta: { msg, status } } = data;
@@ -133,6 +134,10 @@ export default {
       console.log(`当前页: ${val}`);
       // 页码改变时
       this.pagenum = val;
+      this.loadData();
+    },
+    // 搜索
+    handleSearch() {
       this.loadData();
     }
   }
