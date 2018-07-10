@@ -207,8 +207,25 @@ export default {
     // 添加用户的确认按钮
     async handleAdd() {
       // 异步操作
-      // const res = await this.$http.post('users', this.formData);
-
+      const res = await this.$http.post('users', this.formData);
+      console.log(res);
+      const data = res.data;
+      const { meta: { msg, status } } = data;
+      if (status === 201) {
+        // 添加成功提醒
+        this.$message.success(msg);
+        // 隐藏文本框
+        this.addUserDialogVisible = false;
+        // 重新加载此页面
+        this.loadData();
+        // 清空文本框
+        // this.formData.resetFields();
+        for(let key in this.formData) {
+          this.formData[key] = '';
+        }
+      } else {
+        this.$message.error(msg);
+      } 
     }
   }
 };
