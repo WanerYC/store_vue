@@ -91,7 +91,7 @@ export default {
 			// 当前页数
 			pagenum: 1,
 			// 每页显示条目个数
-      pagesize: 5,
+      pagesize: 2,
       total: 0
     };
   },
@@ -107,7 +107,8 @@ export default {
       // 请求头中设置token
       this.$http.defaults.headers.common['Authorization'] = token;
 
-      const res = await this.$http.get('users?pagenum=1&pagesize=10');
+      // const res = await this.$http.get('users?pagenum=1&pagesize=10');
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
       this.loading = false;
       const data = res.data;
       const { meta: { msg, status } } = data;
