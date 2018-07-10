@@ -80,7 +80,7 @@
   </el-pagination>
 
   <!-- 添加用户弹出框 -->
-  <el-dialog title="添加用户" :visible.sync="addUserDialogVisible">
+  <el-dialog @closed="handleClosed" title="添加用户" :visible.sync="addUserDialogVisible">
     <el-form :model="formData" label-width="100px" :rules="formRules" ref="myform">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="formData.username" auto-complete="off"></el-input>
@@ -102,7 +102,7 @@
   </el-dialog>
 
   <!-- 编辑用户弹出框 -->
-  <el-dialog title="编辑用户" :visible.sync="editUserDialogVisible">
+  <el-dialog @closed="handleClosed" title="编辑用户" :visible.sync="editUserDialogVisible">
     <el-form :model="formData" label-width="100px" :rules="formRules" ref="myform">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="formData.username" disabled auto-complete="off"></el-input>
@@ -133,7 +133,7 @@ export default {
       // 当前页数
       pagenum: 1,
       // 每页显示条目个数
-      pagesize: 2,
+      pagesize: 4,
       total: 0,
       searchUse: '',
       // 添加用户板块数据
@@ -257,11 +257,11 @@ export default {
           this.addUserDialogVisible = false;
           // 重新加载此页面
           this.loadData();
-          // 清空文本框
-          // this.formData.resetFields();
-          for (let key in this.formData) {
-            this.formData[key] = '';
-          }
+          // // 清空文本框
+          // // this.formData.resetFields();
+          // for (let key in this.formData) {
+          //   this.formData[key] = '';
+          // }
         } else {
           this.$message.error(msg);
         }
@@ -287,10 +287,19 @@ export default {
       if (status === 200) {
         // 修改成功
         this.$message.success(msg);
+        this.editUserDialogVisible=false;
         // 刷新页面
         this.loadData();
       } else {
         this.$message.error(msg);
+      }
+    },
+    // 表单弹出框关闭事件 -- 清除表单数据
+    handleClosed () {
+      // 清空文本框
+      // this.formData.resetFields();
+      for (let key in this.formData) {
+        this.formData[key] = '';
       }
     }
   }
