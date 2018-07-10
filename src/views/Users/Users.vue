@@ -87,8 +87,10 @@ export default {
     return {
       list: [],
       loading: true,
-      // 分页部分
-      pagenum: 1,
+			// 分页部分
+			// 当前页数
+			pagenum: 1,
+			// 每页显示条目个数
       pagesize: 5,
       total: 0
     };
@@ -111,8 +113,10 @@ export default {
       const { meta: { msg, status } } = data;
       if (status === 200) {
         // 成功
-        const { data: { users } } = data;
+        const { data: { users, total } } = data;
         this.list = users;
+        // 获取总共多少条数据
+        this.total = total;
       } else {
         this.$message.error(msg);
       }
@@ -120,9 +124,15 @@ export default {
     // 切换每页显示多少条时触发
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      // 每页条数该表的时候
+      this.pagesize = val;
+      this.loadData();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      // 页码改变时
+      this.pagenum = val;
+      this.loadData();
     }
   }
 };
