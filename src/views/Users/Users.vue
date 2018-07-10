@@ -62,7 +62,7 @@
 		<el-table-column label="操作">
 			<template slot-scope="scope">
 				<el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
-				<el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+				<el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" plain></el-button>
 				<el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
 			</template>
 		</el-table-column>
@@ -126,7 +126,7 @@ export default {
     },
     // 切换每页显示多少条时触发
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       // 每页条数该表的时候
       this.pagesize = val;
       this.loadData();
@@ -143,7 +143,7 @@ export default {
     },
     // 修改用户状态
     async handleUserStatus(user) {
-      console.log(user);
+      // console.log(user);
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}}`);
       console.log(res);
       const data = res.data;
@@ -151,6 +151,24 @@ export default {
       if (status === 200) {
         // 成功
         this.$message.success(msg);
+        this.loadData();
+      } else {
+        this.$message.error(msg);
+      }
+    },
+    // 删除功能
+    async handleDelete(user) {
+      // alert('323');
+      // console.log(user);
+      // console.log(user.id);
+      const res = await this.$http.delete(`users/${user.id}`);
+      // console.log(res);
+      const data = res.data;
+      const { meta: { msg, status } } = data;
+      if (status === 200) {
+        // 删除成功
+        this.$message.success(msg);
+        this.loadData();
       } else {
         this.$message.error(msg);
       }
