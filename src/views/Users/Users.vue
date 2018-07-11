@@ -130,14 +130,13 @@
         <el-select v-model="currentRoleId">
           <el-option disabled label="请选择" :value="-1"></el-option>
           <el-option v-for="item in roles" :key="item.id" :label="item.roleName" :value="item.id">
-
           </el-option>
         </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="setRoleDialogVisible = false">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button type="primary" @click="handleSetRole">确 定</el-button>
     </div>
   </el-dialog>
 
@@ -154,7 +153,7 @@ export default {
       // 当前页数
       pagenum: 1,
       // 每页显示条目个数
-      pagesize: 4,
+      pagesize: 6,
       total: 0,
       searchUse: '',
       // 添加用户板块数据
@@ -183,6 +182,7 @@ export default {
       setRoleDialogVisible: false,
       // 分配角色需要的数据
       currentUserName: '',
+      currentUserId: -1,
       currentRoleId: -1,
       roles: []
     };
@@ -201,7 +201,7 @@ export default {
 
       // const res = await this.$http.get('users?pagenum=1&pagesize=10');
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchUse}`);
-      console.log(res);
+      // console.log(res);
       this.loading = false;
       const data = res.data;
       const { meta: { msg, status } } = data;
@@ -331,12 +331,41 @@ export default {
     },
     // 点击分配权限按钮,打开分配权限的对话框
     async handleShowSetRoleDialog(user) {
-      console.log(user);
+      // console.log(user);
       this.setRoleDialogVisible = true;
       // 获取所有的角色
       const res = await this.$http.get('roles');
       this.roles = res.data.data;
       this.currentUserName = user.username;
+      this.currentUserId = user.id;
+
+      // 根据用户id查询用户对象 得到角色id
+      const res1 = await this.$http.get(`users/${user.id}`);
+      // console.log(res1);
+      this.currentRoleId = res1.data.data.rid;
+      // console.log(this.currentRoleId);
+    },
+    // 分配角色确定按钮
+    async handleSetRole() {
+      this.setRoleDialogVisible = false;
+      // 发送请求 分配角色
+      const res = await this.$http.put(`users/${this.currentUserId}/role`, {
+        rid: this.currentRoleId
+      });
+      const data = res.data;
+      const { meta: { status, msg } } = data;
+      if (status === 200) {
+        // 分配角色成功
+        this.$message.success(msg);
+        // 关闭对话框
+        this.setRoleDialogVisible = false;
+        // 重置数据
+        this.currentUserName = '';
+        this.currentUserId = '';
+        this.currentRoleId = '';
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
