@@ -48,10 +48,10 @@ export default {
     // 渲染数据列表 发送异步请求
     async loadData() {
       this.loading = true;
-      // 获取token
-      const token = sessionStorage.getItem('token');
-      // 请求头中设置token
-      this.$http.defaults.headers.common['Authorization'] = token;
+      // // 获取token
+      // const token = sessionStorage.getItem('token');
+      // // 请求头中设置token
+      // this.$http.defaults.headers.common['Authorization'] = token;
 
       // const res = await this.$http.get('users?pagenum=1&pagesize=10');
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchUse}`);

@@ -53,10 +53,10 @@ export default {
   },
   methods: {
     async loadData () {
-      // 获取token
-      const token = sessionStorage.getItem('token');
-      // 请求头中设置token
-      this.$http.defaults.headers.common['Authorization'] = token;
+      // // 获取token  已经在axios的拦截器中设置
+      // const token = sessionStorage.getItem('token');
+      // // 请求头中设置token
+      // this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get('rights/list');
       // console.log(res);
       const data = res.data;
