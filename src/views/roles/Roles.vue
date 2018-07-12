@@ -12,6 +12,7 @@
 
     <!-- 表格 -->
     <el-table
+      height="650px"
       v-loading="loadding"
       border
       stripe
@@ -50,6 +51,11 @@
                 </el-col>
               </el-row>
             </el-col>
+          </el-row>
+
+          <!-- 没有权限的时候显示的内容 -->
+          <el-row v-if="scope.row.children.length === 0">
+            <el-col :span="24">暂时没有权限</el-col>
           </el-row>
         </template>
       </el-table-column>
