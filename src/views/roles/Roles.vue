@@ -29,7 +29,7 @@
             :key="item1.id">
             <!-- 一级权限 -->
             <el-col :span="4">
-              <el-tag @close="handleClose(scope.row.id, item1.id)" closable>{{ item1.authName }}</el-tag>
+              <el-tag @close="handleClose(scope.row, item1.id)" closable>{{ item1.authName }}</el-tag>
               <i class="el-icon el-icon-arrow-right"></i>
             </el-col>
             <!-- 二/三级权限 -->
@@ -39,13 +39,13 @@
                 :key="item2.id">
                 <!-- 二级权限 -->
                 <el-col :span="4">
-                  <el-tag @close="handleClose(scope.row.id, item2.id)" type="success" closable>{{ item2.authName }}</el-tag>
+                  <el-tag @close="handleClose(scope.row, item2.id)" type="success" closable>{{ item2.authName }}</el-tag>
                   <i class="el-icon el-icon-arrow-right"></i>
                 </el-col>
                 <!-- 三级权限 -->
                 <el-col :span="20">
                   <el-tag type="warning" closable
-                    @close="handleClose(scope.row.id, item3.id)"
+                    @close="handleClose(scope.row, item3.id)"
                     class="level3"
                     v-for="item3 in item2.children"
                     :key="item3.id">{{ item3.authName }}</el-tag>
@@ -108,15 +108,17 @@ export default {
       console.log(data);
       this.list = data.data;
     },
-    async handleClose(roleId, rightsId) {
+    async handleClose(role, rightsId) {
       // console.log('关闭');
       // roleId 角色id
-      const { data: resData } = await this.$http.delete(`roles/${roleId}/rights/${rightsId}`);
+      const { data: resData } = await this.$http.delete(`roles/${role.id}/rights/${rightsId}`);
       console.log(resData);
-      const { meta: { status, msg }} = resData;
+      const { data, meta: { status, msg }} = resData;
       if (status === 200) {
         // 删除成功
         this.$message.success(msg);
+        // 重新绑定当前角色的children权限
+        role.children = data;
       } else {
         this.$message.error(msg);
       }
