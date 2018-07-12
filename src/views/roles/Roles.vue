@@ -20,7 +20,37 @@
       <!-- 展开列 -->
       <el-table-column type="expand">
         <template slot-scope="scope">
-          <el-tag closable type="success" @close="handleClose"> {{ 'hhhh' }} </el-tag>
+          <!-- 当前角色的权限列表 -->
+
+          <el-row
+            class="level1"
+            v-for="item1 in scope.row.children"
+            :key="item1.id">
+            <!-- 一级权限 -->
+            <el-col :span="4">
+              <el-tag closable>{{ item1.authName }}</el-tag>
+              <i class="el-icon el-icon-arrow-right"></i>
+            </el-col>
+            <!-- 二/三级权限 -->
+            <el-col :span="20">
+              <el-row
+                v-for="item2 in item1.children"
+                :key="item2.id">
+                <!-- 二级权限 -->
+                <el-col :span="4">
+                  <el-tag type="success" closable>{{ item2.authName }}</el-tag>
+                  <i class="el-icon el-icon-arrow-right"></i>
+                </el-col>
+                <!-- 三级权限 -->
+                <el-col :span="20">
+                  <el-tag type="warning" closable
+                    class="level3"
+                    v-for="item3 in item2.children"
+                    :key="item3.id">{{ item3.authName }}</el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
       <el-table-column
@@ -85,5 +115,14 @@ export default {
 
 .addBtn {
   margin: 10px 0;
+}
+
+.level3 {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.level1 {
+  margin-bottom: 10px;
 }
 </style>
