@@ -20,7 +20,7 @@
       <!-- 展开列 -->
       <el-table-column type="expand">
         <template slot-scope="scope">
-          hhh
+          <el-tag closable type="success" @close="handleClose"> {{ 'hhhh' }} </el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -70,6 +70,9 @@ export default {
       const data = res.data;
       console.log(data);
       this.list = data.data;
+    },
+    handleClose() {
+      console.log('关闭');
     }
   }
 };
