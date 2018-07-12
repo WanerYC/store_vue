@@ -57,15 +57,15 @@ export default {
     };
   },
   // 判断是否登录
-  beforeCreate() {
-    // 从sessionStorage 获取token判断是否有
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      this.$router.push({ name: 'login' });
-      // 提示一下
-      this.$message.warning('请登录');
-    }
-  },
+//   beforeCreate() {
+//     // 从sessionStorage 获取token判断是否有
+//     const token = sessionStorage.getItem('token');
+//     if (!token) {
+//       this.$router.push({ name: 'login' });
+//       // 提示一下
+//       this.$message.warning('请登录');
+//     }
+//   },
   created() {
     this.loadData();
   },
