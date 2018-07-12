@@ -2,11 +2,6 @@
   <el-card class="box-card">
     <!-- 面包屑 -->
     <my-breadcrumb level1="权限管理" level2="角色列表"></my-breadcrumb>
-    <!-- <el-breadcrumb separator-class="el-icon-arrow-right" class="elbreadcrumb">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-      <el-breadcrumb-item>权限列表</el-breadcrumb-item>
-    </el-breadcrumb> -->
 
     <!-- 添加按钮 -->
     <el-row>
@@ -17,6 +12,7 @@
 
     <!-- 表格 -->
     <el-table
+      v-loading="loadding"
       border
       stripe
       :data="list"
@@ -52,7 +48,8 @@
 export default {
   data() {
     return {
-      list: []
+      list: [],
+      loadding: true
     };
   },
   created() {
@@ -60,7 +57,9 @@ export default {
   },
   methods: {
     async loadData() {
+      this.loadding = true;
       const res = await this.$http.get('roles');
+      this.loadding = false;
       // console.log(res);
       const data = res.data;
       console.log(data);
