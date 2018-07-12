@@ -80,10 +80,21 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
-          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+          <el-button type="success" icon="el-icon-check" @click="dialogVisible = true" size="mini" plain></el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!--  分配权限的对话框 -->
+    <el-dialog
+      title="分配权限"
+      :visible.sync="dialogVisible">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -92,7 +103,9 @@ export default {
   data() {
     return {
       list: [],
-      loadding: true
+      loadding: true,
+      // 控制分配权限的弹出框
+      dialogVisible: false
     };
   },
   created() {
