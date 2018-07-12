@@ -11,8 +11,8 @@
 
     <!-- 表格 -->
     <el-table
-      height="700px"
       border
+      v-loading="loading"
       :data="list"
       style="width: 100%">
       <el-table-column
@@ -47,6 +47,18 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页 -->
+    <el-pagination
+      class="elpagination"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page.sync="pagenum"
+      :page-sizes="[10, 20, 30, 40, 50, 60]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
+
   </el-card>
 </template>
 
@@ -54,7 +66,12 @@
 export default {
   data() {
     return {
-      list: []
+      list: [],
+      loading: true,
+      // 分页数据
+      pagenum: 1,
+      pagesize: 5,
+      total: 0
     };
   },
   created() {
@@ -62,11 +79,21 @@ export default {
   },
   methods: {
     async loadData() {
-      const { data: resData } = await this.$http.get('categories?type=3');
+      this.loading = true;
+      const { data: resData } = await this.$http.get(`categories?type=3&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
       // console.log(resData);
-      const { data } = resData;
+      this.loading = false;
+      const { data: { result, total } } = resData;
       // console.log(data);
-      this.list = data;
+      this.list = result;
+      // 获取总条数
+      this.total = total;
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
@@ -79,5 +106,9 @@ export default {
 
 .addBtn {
   margin: 10px 0;
+}
+
+.elpagination {
+  margin: 10px -10px;
 }
 </style>
