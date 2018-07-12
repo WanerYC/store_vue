@@ -93,6 +93,7 @@
 
       <!-- 权限列表 -->
       <el-tree
+        ref="tree"
         node-key="id"
         :default-checked-keys="checkList"
         show-checkbox
@@ -103,7 +104,7 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="handleSetRights">确 定</el-button>
       </span>
     </el-dialog>
   </el-card>
@@ -161,6 +162,7 @@ export default {
       const { data } = resData;
       this.treeData = data;
     },
+    // 获取本有的权限显示在页面上
     handleShowRightsDialog(role) {
       this.dialogVisible = true;
 
@@ -178,6 +180,18 @@ export default {
         });
       });
       this.checkList = arr;
+    },
+    // 点击确定按钮 分配权限
+    handleSetRights() {
+      // 会获取到全选中的节点的id
+      const CheckedKeys = this.$refs.tree.getCheckedKeys();
+      // 获取到半选节点的id
+      const tHalfCheckedKeys = this.$refs.tree.getHalfCheckedKeys();
+      console.log(CheckedKeys);
+      console.log(tHalfCheckedKeys);
+
+      const newArray = [...CheckedKeys, ...tHalfCheckedKeys];
+      console.log(newArray);
     }
   }
 };
