@@ -87,9 +87,18 @@
 
     <!--  分配权限的对话框 -->
     <el-dialog
+      @open="handleOpenDialog"
       title="分配权限"
       :visible.sync="dialogVisible">
-      <span>这是一段信息</span>
+
+      <!-- 权限列表 -->
+      <el-tree
+        show-checkbox
+        default-expand-all
+        :data="treeData"
+        :props="props">
+      </el-tree>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -105,7 +114,13 @@ export default {
       list: [],
       loadding: true,
       // 控制分配权限的弹出框
-      dialogVisible: false
+      dialogVisible: false,
+      treeData:[],
+      // 配置显示属性
+      props:{
+        children: 'children',
+        label: 'authName'
+      }
     };
   },
   created() {
@@ -135,6 +150,12 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 打开对话框的时候执行
+    async handleOpenDialog () {
+      const { data: resData } = await this.$http.get('rights/tree');
+      const { data } = resData;
+      this.treeData = data;
     }
   }
 };
