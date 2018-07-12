@@ -15,11 +15,20 @@
       v-loading="loading"
       :data="list"
       style="width: 100%">
-      <el-table-column
+      <el-tree-grid
+        label="分类名称"
+        prop="cat_name"
+        treeKey="cat_id"
+        parentKey="cat_pid"
+        levelKey="cat_level"
+        indentSize="30px">
+
+      </el-tree-grid>
+      <!-- <el-table-column
         prop="cat_name"
         label="分类名称"
         width="180">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         label="级别"
         width="180">
@@ -63,6 +72,13 @@
 </template>
 
 <script>
+// npm install element-tree-grid 安装组件
+// 引入组件
+// const ElTreeGrid = require('element-tree-grid');
+// Vue.component(ElTreeGrid.name,ElTreeGrid);
+import ElTreeGrid from 'element-tree-grid';
+// 局部注册组件
+
 export default {
   data() {
     return {
@@ -95,6 +111,9 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     }
+  },
+  components: {
+    ElTreeGrid
   }
 };
 </script>
