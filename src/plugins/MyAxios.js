@@ -12,8 +12,8 @@ MyAxios.install = function (Vue) {
 
   // 添加请求拦截器
   instance.interceptors.request.use(function (config) {
-    console.log(config);
-    console.log(config.url);
+    // console.log(config);
+    // console.log(config.url);
     // 在发送请求之前做些什么
     if (config.url.toLowerCase() !== 'login') {
       const token = sessionStorage.getItem('token');
