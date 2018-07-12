@@ -80,7 +80,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
-          <el-button type="success" icon="el-icon-check" @click="dialogVisible = true" size="mini" plain></el-button>
+          <el-button type="success" icon="el-icon-check" @click="handleShowRightsDialog(scope.row)" size="mini" plain></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,6 +93,8 @@
 
       <!-- 权限列表 -->
       <el-tree
+        node-key="id"
+        :default-checked-keys="checkList"
         show-checkbox
         default-expand-all
         :data="treeData"
@@ -115,12 +117,14 @@ export default {
       loadding: true,
       // 控制分配权限的弹出框
       dialogVisible: false,
-      treeData:[],
+      treeData: [],
       // 配置显示属性
-      props:{
+      props: {
         children: 'children',
         label: 'authName'
-      }
+      },
+      // 获取已经有的权限的id
+      checkList: []
     };
   },
   created() {
@@ -141,7 +145,7 @@ export default {
       // roleId 角色id
       const { data: resData } = await this.$http.delete(`roles/${role.id}/rights/${rightsId}`);
       console.log(resData);
-      const { data, meta: { status, msg }} = resData;
+      const { data, meta: { status, msg } } = resData;
       if (status === 200) {
         // 删除成功
         this.$message.success(msg);
@@ -156,6 +160,24 @@ export default {
       const { data: resData } = await this.$http.get('rights/tree');
       const { data } = resData;
       this.treeData = data;
+    },
+    handleShowRightsDialog(role) {
+      this.dialogVisible = true;
+
+      // 遍历一级权限
+      const arr = [];
+      role.children.forEach((item1) => {
+        // arr.push(item1.id);
+        // 遍历二级权限
+        item1.children.forEach((item2) => {
+          // arr.push(item2.id);
+          // 遍历三级权限
+          item2.children.forEach((item3) => {
+            arr.push(item3.id);
+          });
+        });
+      });
+      this.checkList = arr;
     }
   }
 };
