@@ -125,7 +125,9 @@ export default {
         label: 'authName'
       },
       // 获取已经有的权限的id
-      checkList: []
+      checkList: [],
+      // 记录当前修改的角色id
+      currentRoleId: -1
     };
   },
   created() {
@@ -164,6 +166,9 @@ export default {
     },
     // 获取本有的权限显示在页面上
     handleShowRightsDialog(role) {
+      // 记录角色id 分配权限的时候使用
+      this.currentRoleId = role.id;
+
       this.dialogVisible = true;
 
       // 遍历一级权限
@@ -182,16 +187,33 @@ export default {
       this.checkList = arr;
     },
     // 点击确定按钮 分配权限
-    handleSetRights() {
+    async handleSetRights() {
       // 会获取到全选中的节点的id
       const CheckedKeys = this.$refs.tree.getCheckedKeys();
       // 获取到半选节点的id
       const tHalfCheckedKeys = this.$refs.tree.getHalfCheckedKeys();
-      console.log(CheckedKeys);
-      console.log(tHalfCheckedKeys);
+      // console.log(CheckedKeys);
+      // console.log(tHalfCheckedKeys);
 
       const newArray = [...CheckedKeys, ...tHalfCheckedKeys];
-      console.log(newArray);
+      // console.log(newArray);
+
+      const { data: resData } = await this.$http.post(`roles/${this.currentRoleId}/rights`, {
+        rids: newArray.join(',')
+      });
+
+      const { meta: { status, msg } } = resData;
+      if (status === 200) {
+        // 分配权限成功
+        // 关闭弹出框
+        this.dialogVisible = false;
+        // 提示
+        this.$message.success(msg);
+        // 重新加载数据
+        this.loadData();
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };
