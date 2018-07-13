@@ -51,7 +51,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleeiditShow(scope.row)" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini"  @click="handleDelete(scope.row)" plain></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -183,7 +183,6 @@ export default {
     },
     // 添加商品分类
     async handleChange() {
-      
       // console.log(selectedOptions);
       const formData = {
         ...this.Addform,
@@ -199,7 +198,7 @@ export default {
       });
       // console.log(resData);
       // console.log(resData.data);
-      const { data, meta: { msg, status } } = resData;
+      const { meta: { msg, status } } = resData;
       if (status === 201) {
         this.$message.success(msg);
         // 关闭当前的弹出框
@@ -207,7 +206,7 @@ export default {
         // 重新加载列表数据
         this.loadData();
         // 清空表单数据
-         // 清空表单数据
+        // 清空表单数据
         this.$refs['Addform'].resetFields();
         this.selectedOptions = []; // 手动清空级联选择器组件选择的状态
       } else {
@@ -224,16 +223,16 @@ export default {
       // this.editform
       // console.log(this.editform.cat_id);
       // console.log(this.editform.cat_name);
-      const cat_id = this.editform.cat_id;
-      const cat_name = this.editform.cat_name;
+      const catid = this.editform.cat_id;
+      const catname = this.editform.cat_name;
       const { data: resData } = await this.$http({
-        url: `/categories/${cat_id}`,
+        url: `/categories/${catid}`,
         method: 'put',
         data: {
-          cat_name
+          catname
         }
       });
-      const { data, meta: { status, msg } } = resData;
+      const { meta: { status, msg } } = resData;
       if (status === 200) {
         this.$message.success(msg);
         // 重新加载数据
@@ -244,6 +243,36 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 删除商品分类
+    async handleDelete(cat) {
+      // console.log(cat);
+      const catid = cat.cat_id;
+      // console.log(catid);
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 发送请求
+        const { data: resData } = await this.$http.delete(`categories/${catid}`);
+        const { meta: { status, msg } } = resData;
+        if (status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          // 刷新页面
+          this.loadData();
+        } else {
+          this.$message.error(msg);
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
   components: {
