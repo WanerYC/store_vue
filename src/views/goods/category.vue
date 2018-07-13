@@ -5,7 +5,7 @@
     <!-- 添加按钮 -->
     <el-row>
       <el-col :span="24">
-        <el-button plain class="addBtn" type="success">添加分类</el-button>
+        <el-button plain class="addBtn" @click="handleAddGoods" type="success">添加分类</el-button>
       </el-col>
     </el-row>
 
@@ -68,6 +68,36 @@
       :total=total>
     </el-pagination>
 
+    <!-- 添加分类表单 -->
+    <el-dialog
+      title="添加商品分类"
+      :visible.sync="AdddialogVisible">
+      <!-- 表单内容 -->
+      <el-form ref="Addform" :model="Addform">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="Addform.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="分类级别">
+          <el-cascader
+            expand-trigger="hover"
+            :options="options"
+            v-model="selectedOptions"
+            :props="{
+              label: 'cat_name',
+              value: 'cat_id',
+              children: 'children'
+            }"
+            change-on-select>
+          </el-cascader>
+        </el-form-item>
+      </el-form>
+      <!-- 按键内容 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="AdddialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleChange">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -87,7 +117,14 @@ export default {
       // 分页数据
       pagenum: 1,
       pagesize: 5,
-      total: 0
+      total: 0,
+      // 添加商品弹出框
+      AdddialogVisible: false,
+      Addform: {
+        cat_name: ''
+      },
+      selectedOptions: [],
+      options: []
     };
   },
   created() {
@@ -115,6 +152,46 @@ export default {
       console.log(`当前页: ${val}`);
       this.pagenum = val;
       this.loadData();
+    },
+    // 添加商品分类  -- 添加商品分类弹出框
+    async handleAddGoods() {
+      this.AdddialogVisible = true;
+      // 发送后台请求
+      const { data: resData } = await this.$http.get('categories?type=2');
+      // console.log(resData.data);
+      this.options = resData.data;
+    },
+    async handleChange() {
+      
+      // console.log(selectedOptions);
+      const formData = {
+        ...this.Addform,
+        cat_pid: this.selectedOptions[this.selectedOptions.length - 1],
+        cat_level: this.selectedOptions.length
+      };
+      // console.log(formData);
+      // 发送请求
+      const { data: resData } = await this.$http({
+        method: 'post',
+        url: 'categories',
+        data: formData
+      });
+      // console.log(resData);
+      // console.log(resData.data);
+      const { data, meta: { msg, status } } = resData;
+      if (status === 201) {
+        this.$message.success(msg);
+        // 关闭当前的弹出框
+        this.AdddialogVisible = false;
+        // 重新加载列表数据
+        this.loadData();
+        // 清空表单数据
+         // 清空表单数据
+        this.$refs['Addform'].resetFields();
+        this.selectedOptions = []; // 手动清空级联选择器组件选择的状态
+      } else {
+        this.$message.error(msg);
+      }
     }
   },
   components: {
@@ -126,6 +203,7 @@ export default {
 <style>
 .box-card {
   height: 100%;
+  overflow: auto;
 }
 
 .addBtn {
