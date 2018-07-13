@@ -21,7 +21,7 @@
         treeKey="cat_id"
         parentKey="cat_pid"
         levelKey="cat_level"
-        indentSize="30px">
+        :indentSize= "30">
 
       </el-tree-grid>
       <!-- <el-table-column
@@ -61,11 +61,11 @@
       class="elpagination"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page.sync="pagenum"
+      :current-page="pagenum"
       :page-sizes="[10, 20, 30, 40, 50, 60]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+      :total=total>
     </el-pagination>
 
   </el-card>
@@ -97,6 +97,7 @@ export default {
     async loadData() {
       this.loading = true;
       const { data: resData } = await this.$http.get(`categories?type=3&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      // pagenum=${this.pagenum}&pagesize=${this.pagesize}
       // console.log(resData);
       this.loading = false;
       const { data: { result, total } } = resData;
@@ -107,9 +108,13 @@ export default {
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.pagesize = val;
+      this.loadData();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.pagenum = val;
+      this.loadData();
     }
   },
   components: {

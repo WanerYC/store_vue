@@ -19,3 +19,7 @@ npm run build --report
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+接口文档地址：shop-api.circle.ink
+在线笔记地址：vuejs.circle.ink
+项目地址: https://github.com/lipengzhou/itcast_store46
