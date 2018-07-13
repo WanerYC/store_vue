@@ -50,7 +50,7 @@
         prop="address"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
+          <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleeiditShow(scope.row)" plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
         </template>
       </el-table-column>
@@ -98,6 +98,23 @@
       </span>
     </el-dialog>
 
+    <!-- 编辑商品分类 -->
+    <el-dialog
+      title="编辑商品分类"
+      :visible.sync="editdialogVisible">
+      <!-- 表单内容 -->
+      <el-form ref="editform" :model="editform">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="editform.cat_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 按键内容 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editdialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleedit">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -124,7 +141,10 @@ export default {
         cat_name: ''
       },
       selectedOptions: [],
-      options: []
+      options: [],
+      // 编辑商品分类
+      editdialogVisible: false,
+      editform: {}
     };
   },
   created() {
@@ -161,6 +181,7 @@ export default {
       // console.log(resData.data);
       this.options = resData.data;
     },
+    // 添加商品分类
     async handleChange() {
       
       // console.log(selectedOptions);
@@ -189,6 +210,37 @@ export default {
          // 清空表单数据
         this.$refs['Addform'].resetFields();
         this.selectedOptions = []; // 手动清空级联选择器组件选择的状态
+      } else {
+        this.$message.error(msg);
+      }
+    },
+    // 编辑商品分类
+    handleeiditShow(cat) {
+      this.editform = cat;
+      this.editdialogVisible = true;
+      console.log(cat);
+    },
+    async handleedit() {
+      // this.editform
+      // console.log(this.editform.cat_id);
+      // console.log(this.editform.cat_name);
+      const cat_id = this.editform.cat_id;
+      const cat_name = this.editform.cat_name;
+      const { data: resData } = await this.$http({
+        url: `/categories/${cat_id}`,
+        method: 'put',
+        data: {
+          cat_name
+        }
+      });
+      const { data, meta: { status, msg } } = resData;
+      if (status === 200) {
+        this.$message.success(msg);
+        // 重新加载数据
+        this.loadData();
+
+        // 关闭窗口
+        this.editdialogVisible = false;
       } else {
         this.$message.error(msg);
       }
