@@ -78,7 +78,7 @@
           <el-input v-model="Addform.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="分类级别">
-          <el-cascader
+          <!-- <el-cascader
             expand-trigger="hover"
             :options="options"
             v-model="selectedOptions"
@@ -88,7 +88,8 @@
               children: 'children'
             }"
             change-on-select>
-          </el-cascader>
+          </el-cascader> -->
+          <categoryCascader typr="3"></categoryCascader>
         </el-form-item>
       </el-form>
       <!-- 按键内容 -->
@@ -119,6 +120,9 @@
 </template>
 
 <script>
+// 引入级联 组件
+// 引入三级联动
+import categoryCascader from '@/components/CategoryCascader.vue';
 // npm install element-tree-grid 安装组件
 // 引入组件
 // const ElTreeGrid = require('element-tree-grid');
@@ -276,7 +280,8 @@ export default {
     }
   },
   components: {
-    ElTreeGrid
+    ElTreeGrid,
+    categoryCascader
   }
 };
 </script>

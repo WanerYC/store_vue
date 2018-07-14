@@ -27,7 +27,7 @@
             <el-input v-model="form.goods_number"></el-input>
           </el-form-item>
            <el-form-item label="商品分类">
-            <el-input v-model="form.goods_number"></el-input>
+             <categoryCascader typr="3"></categoryCascader>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -43,12 +43,23 @@
 </template>
 
 <script>
+// 引入三级联动
+import categoryCascader from '@/components/CategoryCascader.vue';
 export default {
- data() {
-   return {
-     form: []
-   }
- }
+  data() {
+    return {
+      form: {
+        goods_name: '',
+        goods_price: '',
+        goods_weight: '',
+        goods_number: '',
+        goods_cat: ''
+      }
+    };
+  },
+  components: {
+      categoryCascader
+  }
 };
 </script>
 
