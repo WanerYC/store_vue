@@ -9,6 +9,7 @@ import Roles from '@/views/roles/Roles.vue';
 import { Message } from 'element-ui';
 import Category from '@/views/goods/category.vue';
 import goodsList from '@/views/goods/goods.vue';
+import addGoodsList from '@/views/goods/addGoodsList.vue';
 
 Vue.use(Router);
 
@@ -25,7 +26,8 @@ const router = new Router({
         {name: 'rights', path: '/rights', component: Rights},
         {name: 'roles', path: '/roles', component: Roles},
         {name: 'categories', path: '/categories', component: Category},
-        {name: 'goods', path: '/goods', component: goodsList}
+        {name: 'goods', path: '/goods', component: goodsList},
+        {name: 'addgoods', path: '/goods/add', component: addGoodsList}
       ]
     }
   ]

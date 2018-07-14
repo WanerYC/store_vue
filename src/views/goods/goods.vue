@@ -8,7 +8,7 @@
         <el-input placeholder="请输入内容" clearable class="searchInput">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="success" plain>添加商品</el-button>
+        <el-button type="success" plain @click="$router.push('goods/add')">添加商品</el-button>
       </el-col>
     </el-row>
 
