@@ -39,7 +39,6 @@
       <el-tab-pane label="商品图片">商品图片</el-tab-pane>
       <el-tab-pane label="商品内容">商品内容</el-tab-pane>
     </el-tabs>
-
    </el-card>
 </template>
 
@@ -62,13 +61,25 @@ export default {
     categoryCascader
   },
   methods: {
-    handleAdd() {
-      console.log(this.form);
+    async handleAdd() {
+      // console.log(this.form);
+      const res = await this.$http({
+        url: 'goods',
+        method: 'post',
+        data: this.form
+      });
+      console.log(res);
+      const { meta: { status, msg } } = res.data;
+      if (status === 201) {
+        this.$message.success(msg);
+      } else {
+        this.$message.error(msg);
+      }
     },
     handlegaibianle(data) {
-      console.log(data);
+      // console.log(data);
       this.form.goods_cat = data.join(',');
-      console.log(this.form.goods_cat);
+      // console.log(this.form.goods_cat);
     }
   }
 };
