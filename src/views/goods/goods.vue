@@ -43,7 +43,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="handleDeletGoods(scope.row)" size="mini" plain></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,7 +87,7 @@ export default {
         }
       });
       console.log(resData);
-      const { data, meta: { status, msg } } = resData;
+      const { data } = resData;
       console.log(data);
       this.list = data.goods;
       this.total = data.total;
@@ -104,6 +104,42 @@ export default {
     },
     handleAddGood () {
       alert('添加商品');
+    },
+    // 删除商品
+    async handleDeletGoods (good) {
+      // console.log(good);
+      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 发送请求
+        /* const { data: resData } = await this.$http({
+          url: 'goods',
+          params: {
+            id:good.goods_id
+          },
+          method: 'delete'
+        }); */
+        const { data: resData } = await this.$http.delete(`goods/${good.goods_id}`);
+        const { meta: { status, msg } } = resData;
+        console.log(resData.meta);
+        if (status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          // 刷新页面
+          this.loadData();
+        } else {
+          this.$message.error(msg);
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 };
