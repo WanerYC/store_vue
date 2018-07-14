@@ -8,6 +8,7 @@
       value: 'cat_id',
       children: 'children'
     }"
+    @change="handleChange"
     change-on-select>
   </el-cascader>
 </template>
@@ -36,8 +37,16 @@ export default {
   },
   data () {
     return {
-      options: []
+      options: [],
+      selectedOptions: []
     };
+  },
+  methods: {
+    handleChange() {
+      // console.log(this.selectedOptions);
+      // 对外部 发送一个自定义事件,外部为使用该组件的父组件
+      this.$emit('gaibianle', this.selectedOptions);
+    }
   }
 };
 </script>

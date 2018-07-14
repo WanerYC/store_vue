@@ -27,10 +27,11 @@
             <el-input v-model="form.goods_number"></el-input>
           </el-form-item>
            <el-form-item label="商品分类">
-             <categoryCascader typr="3"></categoryCascader>
+             <!-- 三级联动组件 -->
+             <categoryCascader @gaibianle="handlegaibianle" type="3"></categoryCascader>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+            <el-button type="primary" @click="handleAdd">立即创建</el-button>
             <el-button>取消</el-button>
           </el-form-item>
         </el-form>
@@ -58,7 +59,17 @@ export default {
     };
   },
   components: {
-      categoryCascader
+    categoryCascader
+  },
+  methods: {
+    handleAdd() {
+      console.log(this.form);
+    },
+    handlegaibianle(data) {
+      console.log(data);
+      this.form.goods_cat = data.join(',');
+      console.log(this.form.goods_cat);
+    }
   }
 };
 </script>
