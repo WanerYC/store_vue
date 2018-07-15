@@ -9,7 +9,9 @@
       children: 'children'
     }"
     @change="handleChange"
-    change-on-select>
+    change-on-select
+    placeholder="默认是一级分类"
+    clearable>
   </el-cascader>
 </template>
 

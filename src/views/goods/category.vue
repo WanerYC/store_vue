@@ -187,10 +187,15 @@ export default {
     },
     // 添加商品分类
     async handleChange() {
+      // 如果没有选择任何节点,则cat_id是0
+      let catPid = 0;
+      if (this.selectedOptions[0]) {
+        catPid = this.selectedOptions[this.selectedOptions.length - 1];
+      }
       // console.log(selectedOptions);
       const formData = {
         ...this.Addform,
-        cat_pid: this.selectedOptions[this.selectedOptions.length - 1],
+        cat_pid: catPid,
         cat_level: this.selectedOptions.length
       };
       // console.log(formData);
