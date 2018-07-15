@@ -38,8 +38,19 @@
         <el-button @click="handleNextStep">下一步</el-button>
       </el-tab-pane>
 
+      <!-- 上传图片区 -->
       <el-tab-pane label="商品图片" name="1">
-        商品图片
+        <el-upload
+          action="http://localhost:8888/api/private/v1/upload"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :on-success="handleUploadSccess"
+          :file-list="fileList2"
+          :headers="headers"
+          list-type="picture">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
         <el-row>
           <el-col :span="4">
             <el-button @click="handleNextStep">下一步</el-button>
@@ -52,10 +63,7 @@
         <quill-editor
           class="quillEditor"
           v-model="form.goods_introduce"
-          ref="myQuillEditor"
-          @blur="onEditorBlur($event)"
-          @focus="onEditorFocus($event)"
-          @ready="onEditorReady($event)">
+          ref="myQuillEditor">
         </quill-editor>
         <el-row>
           <el-col :span="8" class="Btns">
@@ -79,6 +87,7 @@ import { quillEditor } from 'vue-quill-editor';
 
 // 引入三级联动
 import categoryCascader from '@/components/CategoryCascader.vue';
+
 export default {
   data() {
     return {
@@ -88,10 +97,17 @@ export default {
         goods_weight: '',
         goods_number: '',
         goods_cat: '',
-        goods_introduce: ''
+        goods_introduce: '',
+        pics: [
+          // {pic: '图片路径'}
+        ]
       },
       activeName: '0',
-      stepActive: 0
+      stepActive: 0,
+      headers: {
+        Authorization: window.sessionStorage.getItem('token')
+      },
+      fileList2: []
     };
   },
   components: {
@@ -120,23 +136,6 @@ export default {
       // console.log(this.form.goods_cat);
     },
 
-    // 富文本编辑器方法
-    // 文本框失去焦点时触发
-    onEditorBlur(quill) {
-      console.log('editor blur!', quill);
-      console.log(this.form.goods_introduce);
-    },
-    // 文本框获取焦点时触发
-    onEditorFocus(quill) {
-      console.log('editor focus!', quill);
-    },
-    onEditorReady(quill) {
-      console.log('editor ready!', quill);
-    },
-    onEditorChange({ quill, html, text }) {
-      console.log('editor change!', quill, html, text);
-      this.content = html;
-    },
     // 点击下一步触发
     handleNextStep() {
       this.activeName++;
@@ -147,6 +146,33 @@ export default {
     handleTabClick(tab, event) {
       // tab.index 为当前标签tab的下标
       this.stepActive = tab.index - 0;
+    },
+    // 上传图片 upload
+    handleRemove(file, fileList) {
+        // console.log(file, fileList);
+        // 把数组中某个元素的pic === file.response.data.tmp_path的元素移出
+        const index = this.form.pics.findIndex(function(item) {
+          return item.pic === file.response.data.tmp_path
+        })
+        console.log(index);
+        if (index !== -1) {
+          this.form.pics.splice(index, 1);
+        }
+      },
+    handlePreview(file) {
+      console.log(file);
+    },
+    // 图片上传成功时触发
+    handleUploadSccess (response, file, fileList) {
+      // response 接口相应结果对象
+      // file 上传的文件对象
+      // fileList 文件列表数组
+      console.log(response);
+      console.log(file);
+      console.log(fileList);
+      this.form.pics.push({
+        pic: response.data.tmp_path
+      })
     }
   }
 };
