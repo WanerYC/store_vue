@@ -149,16 +149,16 @@ export default {
     },
     // 上传图片 upload
     handleRemove(file, fileList) {
-        // console.log(file, fileList);
-        // 把数组中某个元素的pic === file.response.data.tmp_path的元素移出
-        const index = this.form.pics.findIndex(function(item) {
-          return item.pic === file.response.data.tmp_path
-        })
-        console.log(index);
-        if (index !== -1) {
-          this.form.pics.splice(index, 1);
-        }
-      },
+      // console.log(file, fileList);
+      // 把数组中某个元素的pic === file.response.data.tmp_path的元素移出
+      const index = this.form.pics.findIndex(function(item) {
+        return item.pic === file.response.data.tmp_path;
+      });
+      console.log(index);
+      if (index !== -1) {
+        this.form.pics.splice(index, 1);
+      }
+    },
     handlePreview(file) {
       console.log(file);
     },
@@ -172,7 +172,7 @@ export default {
       console.log(fileList);
       this.form.pics.push({
         pic: response.data.tmp_path
-      })
+      });
     }
   }
 };
