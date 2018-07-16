@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       list: [],
-      // loading: true
+      loading: false,
       // 分页
       pagenum: 1,
       pagesize: 5,
@@ -84,6 +84,7 @@ export default {
   },
   methods: {
     async loadData () {
+      this.loading = true;
       const { data: resData } = await this.$http({
         url: 'orders',
         params: {
@@ -91,6 +92,7 @@ export default {
           pagesize: this.pagesize
         }
       });
+      this.loading = false;
       console.log(resData.data);
       this.list = resData.data.goods;
       this.total = resData.data.total;
