@@ -28,8 +28,8 @@
           width="100"
           label="是否付款">
         <template slot-scope="scope">
-          <span v-if="scope.row.pay_status === '0'">是</span>
-          <span v-else-if="scope.row.pay_status === '1'">否</span>
+          <el-button size="mini" type="danger" v-if="scope.row.pay_status === '0'" plain>未付款</el-button>
+          <el-button size="mini" type="danger" v-else-if="scope.row.pay_status === '1'" plain>已付款</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -47,8 +47,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleShowEditDialog(scope.row)" plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" plain></el-button>
-          <el-button type="success" icon="el-icon-check" size="mini" @click="handleShowSetRoleDialog(scope.row)" plain></el-button>
+          <!-- <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" plain></el-button>
+          <el-button type="success" icon="el-icon-check" size="mini" @click="handleShowSetRoleDialog(scope.row)" plain></el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -64,6 +64,24 @@
       :total=total>
     </el-pagination>
 
+    <!-- 修改地址框 -->
+    <el-dialog
+      title="修改地址"
+      :visible.sync="editShowAddress">
+      <el-form label-position="left" label-width="80px" :model="address">
+        <el-form-item label="省市区/县">
+          <el-input v-model="address.name"></el-input>
+        </el-form-item>
+        <el-form-item label="详细地址">
+          <el-input v-model="address.region"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editShowAddress = false">取 消</el-button>
+        <el-button type="primary" @click="editShowAddress = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -76,7 +94,10 @@ export default {
       // 分页
       pagenum: 1,
       pagesize: 5,
-      total: 0
+      total: 0,
+      // 修改地址
+      editShowAddress: false,
+      address: ''
     };
   },
   created() {
@@ -106,6 +127,9 @@ export default {
       console.log('handleCurrentChange', val);
       this.pagenum = val;
       this.loadData();
+    },
+    handleShowEditDialog() {
+      this.editShowAddress = true;
     }
   }
 };
