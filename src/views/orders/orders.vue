@@ -70,7 +70,16 @@
       :visible.sync="editShowAddress">
       <el-form label-position="left" label-width="80px" :model="address">
         <el-form-item label="省市区/县">
-          <el-input v-model="address.name"></el-input>
+          <template>
+            <div id="app">
+              <el-cascader
+                size="large"
+                :options="options"
+                v-model="selectedOptions"
+                @change="handleChange">
+              </el-cascader>
+            </div>
+          </template>
         </el-form-item>
         <el-form-item label="详细地址">
           <el-input v-model="address.region"></el-input>
@@ -86,6 +95,9 @@
 </template>
 
 <script>
+// 省市区三级联动（带“全部”选项）
+import { regionDataPlus } from 'element-china-area-data';
+
 export default {
   data() {
     return {
@@ -97,7 +109,12 @@ export default {
       total: 0,
       // 修改地址
       editShowAddress: false,
-      address: ''
+      address: {
+        
+      },
+      // 省市区三级联动
+      options: regionDataPlus,
+      selectedOptions: []
     };
   },
   created() {
@@ -130,6 +147,10 @@ export default {
     },
     handleShowEditDialog() {
       this.editShowAddress = true;
+    },
+    // 省市区三级联动
+    handleChange (value) {
+      console.log(value);
     }
   }
 };
