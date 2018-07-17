@@ -11,6 +11,7 @@ import Category from '@/views/goods/category.vue';
 import goodsList from '@/views/goods/goods.vue';
 import addGoodsList from '@/views/goods/addGoodsList.vue';
 import Orders from '@/views/orders/orders.vue';
+import Reports from '@/views/reports/reports.vue';
 
 Vue.use(Router);
 
@@ -29,7 +30,8 @@ const router = new Router({
         {name: 'categories', path: '/categories', component: Category},
         {name: 'goods', path: '/goods', component: goodsList},
         {name: 'addgoods', path: '/goods/add', component: addGoodsList},
-        {name: 'orders', path: 'orders', component: Orders}
+        {name: 'orders', path: '/orders', component: Orders},
+        {name: 'reports', path: '/reports', component: Reports}
       ]
     }
   ]

@@ -2,6 +2,11 @@
   <el-card class="box-card">
     <!-- 面包屑 -->
     <my-breadcrumb level1="订单管理" level2="订单列表"></my-breadcrumb>
+
+    <!-- 点击按钮移动地图 -->
+    <el-button @click="handleMove" type="success">点击移动</el-button>
+    <!-- 百度地图 -->
+    <div id="container"></div>
     <!-- 表格 -->
     <el-table
       class="eltables"
@@ -109,16 +114,25 @@ export default {
       total: 0,
       // 修改地址
       editShowAddress: false,
-      address: {
-        
-      },
+      address: {},
       // 省市区三级联动
       options: regionDataPlus,
-      selectedOptions: []
+      selectedOptions: [],
+      map: null
     };
   },
   created() {
     this.loadData();
+  },
+  mounted() {
+    // 百度地图
+    this.map = new window.BMap.Map('container');
+    console.log(window.BMap);
+    // 创建地图实例
+    var point = new window.BMap.Point(116.404, 39.915);
+    // 创建点坐标
+    this.map.centerAndZoom(point, 15);
+    // 初始化地图，设置中心点坐标和地图级别
   },
   methods: {
     async loadData () {
@@ -151,9 +165,16 @@ export default {
     // 省市区三级联动
     handleChange (value) {
       console.log(value);
+    },
+    handleMove () {
+      const point = new window.BMap.Point(116.404, 39.915);
+      this.map.centerAndZoom(point, 15);
+      const marker = new window.BMap.Marker(point); // 创建标注
+      this.map.addOverlay(marker); // 将标注添加到地图中
     }
   }
 };
+
 </script>
 
 <style>
@@ -166,4 +187,9 @@ export default {
   margin-top: 10px;
 }
 
+#container {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ccc;
+}
 </style>
