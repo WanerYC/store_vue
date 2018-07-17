@@ -102,6 +102,15 @@
 <script>
 // 省市区三级联动（带“全部”选项）
 import { regionDataPlus } from 'element-china-area-data';
+// import func from './vue-temp/vue-editor-bridge';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
+// 进度条
+NProgress.start();
+setTimeout(function(){
+  NProgress.done();
+}, 3000);
 
 export default {
   data() {

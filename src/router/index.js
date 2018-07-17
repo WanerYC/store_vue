@@ -13,6 +13,8 @@ import addGoodsList from '@/views/goods/addGoodsList.vue';
 import Orders from '@/views/orders/orders.vue';
 import Reports from '@/views/reports/reports.vue';
 
+import NProgress from 'nprogress';
+
 Vue.use(Router);
 
 const router = new Router({
@@ -39,6 +41,9 @@ const router = new Router({
 
 // 设置路由的前置守卫
 router.beforeEach((to, from, next) => {
+  // 进度条
+  NProgress.start();
+
   // console.log(to, from);
   // 判断当前方位的路由是否为login
   if (to.name === 'login') {
@@ -55,6 +60,10 @@ router.beforeEach((to, from, next) => {
     }
   }
   next();
+});
+
+router.afterEach((to, from) => {
+  NProgress.done();
 });
 
 export default router;
